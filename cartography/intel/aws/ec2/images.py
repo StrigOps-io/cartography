@@ -17,24 +17,24 @@ logger = logging.getLogger(__name__)
 @timeit
 def get_images_in_use(neo4j_session: neo4j.Session, region: str, current_aws_account_id: str) -> List[str]:
     # We use OPTIONAL here to allow query chaining with queries that may not match.
-    get_images_query = """
-    OPTIONAL MATCH (:AWSAccount{id: $AWS_ACCOUNT_ID})-[:RESOURCE]->(i:EC2Instance)
-    WHERE i.region = $Region
-    WITH collect(DISTINCT i.imageid) AS images
-    OPTIONAL MATCH (:AWSAccount{id: $AWS_ACCOUNT_ID})-[:RESOURCE]->(lc:LaunchConfiguration)
-    WHERE lc.region = $Region
-    WITH collect(DISTINCT lc.image_id)+images AS images
-    OPTIONAL MATCH (:AWSAccount{id: $AWS_ACCOUNT_ID})-[:RESOURCE]->(ltv:LaunchTemplateVersion)
-    WHERE ltv.region = $Region
-    WITH collect(DISTINCT ltv.image_id)+images AS images
-    RETURN images
-    """
-    results = neo4j_session.run(get_images_query, AWS_ACCOUNT_ID=current_aws_account_id, Region=region)
-    images = []
-    for r in results:
-        images.extend(r['images'])
-    return images
-
+    #get_images_query = """
+    #OPTIONAL MATCH (:AWSAccount{id: $AWS_ACCOUNT_ID})-[:RESOURCE]->(i:EC2Instance)
+    #WHERE i.region = $Region
+    #WITH collect(DISTINCT i.imageid) AS images
+    #OPTIONAL MATCH (:AWSAccount{id: $AWS_ACCOUNT_ID})-[:RESOURCE]->(lc:LaunchConfiguration)
+    #WHERE lc.region = $Region
+    #WITH collect(DISTINCT lc.image_id)+images AS images
+    #OPTIONAL MATCH (:AWSAccount{id: $AWS_ACCOUNT_ID})-[:RESOURCE]->(ltv:LaunchTemplateVersion)
+    #WHERE ltv.region = $Region
+    #WITH collect(DISTINCT ltv.image_id)+images AS images
+    #RETURN images
+    #"""
+    #results = neo4j_session.run(get_images_query, AWS_ACCOUNT_ID=current_aws_account_id, Region=region)
+    #images = []
+    #for r in results:
+    #    images.extend(r['images'])
+    #return images
+    return []
 
 @timeit
 @aws_handle_regions
